@@ -1,0 +1,53 @@
+id: TranslationsDependencyConfig
+depends:
+  - Siarko.ConfigCache.default
+  - Siarko.Plugins.default
+
+plugins:
+  \Siarko\ActionRouting\HttpApplication:
+    - class: \Siarko\Translations\Bootstrap\AppTranslationsRegistrar
+
+types:
+  # interface preference
+  \Siarko\Translations\Loader\LoaderInterface: \Siarko\Translations\TranslationsProvider
+  # config loader virtual types
+  V\Siarko\Tanslations\PoolLookup: !new \Siarko\Files\Lookup\PoolLookup
+  V\Siarko\Translations\TranslationFileExtensionProvider: !new \Siarko\ConfigFiles\Provider\ConfigFileExtensionProvider
+  V\Siarko\Translations\ConfigProvider: !new \Siarko\ConfigFiles\Provider\ScopedProvider
+  V\Siarko\Translations\CacheDirectoryProvider: !new \Siarko\Paths\Provider\ProjectPathProvider
+  V\Siarko\Translations\Cache: !new \Siarko\CacheFiles\Api\CacheSetInterface
+  V\Siarko\Translations\CachedConfigProvider: !new \Siarko\ConfigCache\Api\Provider\CachedConfigProviderInterface
+
+arguments:
+  # config loading arguments
+  # Configure pool config files lookup
+  V\Siarko\Tanslations\PoolLookup:
+    fileType: !const \Siarko\Translations\TranslationsProvider::PATH_PROVIDER_POOL_TYPE
+  # Set acceptable extensions for translation files
+  V\Siarko\Translations\TranslationFileExtensionProvider:
+    extensions: [csv]
+  # Configure config builder/provider
+  V\Siarko\Translations\ConfigProvider:
+    fileLookup: V\Siarko\Tanslations\PoolLookup
+    configMerger: \Siarko\Translations\Loader\Merger
+    extensionProvider: V\Siarko\Translations\TranslationFileExtensionProvider
+  # configure where cached language files will be stored
+  V\Siarko\Translations\CacheDirectoryProvider:
+    path: generated/cache/translations
+  V\Siarko\Translations\Cache:
+    cacheDirectory: V\Siarko\Translations\CacheDirectoryProvider
+  # Configure cached config provider
+  V\Siarko\Translations\CachedConfigProvider:
+    configProvider: V\Siarko\Translations\ConfigProvider
+    cache: V\Siarko\Translations\Cache
+  \Siarko\Translations\TranslationsProvider:
+    fileLookup: V\Siarko\Tanslations\PoolLookup
+    extensionProvider: V\Siarko\Translations\TranslationFileExtensionProvider
+    configProvider: V\Siarko\Translations\CachedConfigProvider
+  \Siarko\CacheFiles\Manager:
+    caches:
+      translations: V\Siarko\Translations\Cache
+  # Modules configuration
+  \Siarko\Modules\Paths\ModulePathsProvider:
+    pathTypes:
+      translation: View/Translations
