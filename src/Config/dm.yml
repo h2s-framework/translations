@@ -2,6 +2,7 @@ id: TranslationsDependencyConfig
 depends:
   - Siarko.ConfigCache.default
   - Siarko.Plugins.default
+module: Core.Translations
 
 plugins:
   \Siarko\ActionRouting\HttpApplication:

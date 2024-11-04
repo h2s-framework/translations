@@ -3,7 +3,7 @@
   "description": "H2S translations Library ",
   "minimum-stability": "stable",
   "license": "proprietary",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "library",
   "authors": [
     {
