@@ -42,8 +42,8 @@ class TranslationsProvider implements LoaderInterface
     {
         if(empty($this->languages)){
             $extensions = $this->extensionProvider->getAsRegex('');
-            $files = $this->fileLookup->find($extensions);
-            $this->languages = array_map(fn ($file) => $file->getPathInfo()->getFileName(), $files);
+            $results = $this->fileLookup->find($extensions);
+            $this->languages = array_map(fn ($result) => $result->getFile()->getPathInfo()->getFileName(), $results);
         }
         return $this->languages;
     }
